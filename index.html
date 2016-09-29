@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Hand Writer JS</title>
+<style>
+canvas {
+	border : 1px solid grey;
+}
+
+p {
+	text-decoration : underline;
+}
+</style>
+<script type="text/javascript" charset="utf-8">
+var canvas;
+var ctx;
+var letterWidth = 59;
+var fontSize = 18;
+
+var charTableImage;
+var charTable = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+				'1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
+				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+				'\'', '.', ',', ';', '!', '?', '-', ':', '(', ')', '[', ']', '/',
+				'\340', '\350', '\351', '\352', '\357', '\364', '\374',
+				'&', '\347',
+				' '];
+
+				
+window.onload = function()
+{
+	canvas = document.getElementById("screen");
+	ctx = canvas.getContext("2d");
+	
+	charTableImage= new Image();
+	charTableImage.src = "alphabet.png";
+}
+
+function getIndexOfChar(character)
+{
+	for(var i = 0; i < charTable.length; i++)
+		if(character==charTable[i])
+			return i;
+}
+
+function updateString()
+{
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	var toWrite = document.getElementById("word").value;
+	
+	for(var i = 0; i < toWrite.length; i++)
+	{
+		var charac = toWrite.charAt(i);
+
+		var x = parseInt(getIndexOfChar(charac) % 37);
+		var y = parseInt(getIndexOfChar(charac) / 37);
+		
+		ctx.drawImage(charTableImage, x * letterWidth, y * letterWidth * 2, letterWidth, letterWidth*2, i*fontSize, 0, fontSize, fontSize*2);
+	}
+}
+</script>
+</head>
+<body>
+<canvas id="screen" width = "1000" height = "250"></canvas>
+<div>
+<input type="text" id="word" value=""></input>
+<input type="button" value="Hand write that !" onclick="updateString()"></input>
+<p>Please note that this is the very first version of HandWriter. Many upgrades will come soon. Thanks for trying it.</p>
+<br/>
+<p>Github of project : </p> <a href="https://github.com/AnselmeClergeot/handwriter">click here</a>
+</div>
+</body>
+</html>
