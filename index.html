@@ -7,8 +7,9 @@ canvas {
 	border : 1px solid grey;
 }
 
-p {
-	text-decoration : underline;
+body {
+margin : 0;
+
 }
 </style>
 <script type="text/javascript" charset="utf-8">
@@ -26,14 +27,33 @@ var charTable = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'
 				'&', '\347',
 				' '];
 
-				
+function drawGrid()
+{
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	for(var x = 0; x < canvas.width/fontSize; x++)
+	{
+		for(var y = 0; y < canvas.width/fontSize*2; y++)
+		{
+			ctx.drawImage(charTableImage, 11 * letterWidth, 2 * letterWidth * 2, letterWidth, letterWidth*2, x*fontSize, y*fontSize*2, fontSize, fontSize*2);
+		}
+	}
+}
+			
 window.onload = function()
 {
 	canvas = document.getElementById("screen");
 	ctx = canvas.getContext("2d");
-	
+	canvas.width = innerWidth;
+	canvas.height = innerHeight / 1.7;
 	charTableImage= new Image();
 	charTableImage.src = "alphabet.png";
+	
+	charTableImage.onload = function()
+	{
+	drawGrid();
+	}
+	
 }
 
 function getIndexOfChar(character)
@@ -43,32 +63,44 @@ function getIndexOfChar(character)
 			return i;
 }
 
+
 function updateString()
 {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	drawGrid();
+	
+	var xPos = 0;
+	var yPos = 0;
+	
+	
 	
 	var toWrite = document.getElementById("word").value;
 	
 	for(var i = 0; i < toWrite.length; i++)
 	{
+		
 		var charac = toWrite.charAt(i);
 
 		var x = parseInt(getIndexOfChar(charac) % 37);
 		var y = parseInt(getIndexOfChar(charac) / 37);
 		
-		ctx.drawImage(charTableImage, x * letterWidth, y * letterWidth * 2, letterWidth, letterWidth*2, i*fontSize, 0, fontSize, fontSize*2);
+		if(charac == '\n')
+		{
+			xPos = -1;
+			yPos++;
+		}
+		
+		ctx.drawImage(charTableImage, x * letterWidth, y * letterWidth * 2, letterWidth, letterWidth*2, xPos*fontSize, yPos*fontSize*2, fontSize, fontSize*2);
+		xPos++;
 	}
 }
 </script>
 </head>
 <body>
-<canvas id="screen" width = "1000" height = "250"></canvas>
+<canvas id="screen"></canvas>
 <div>
-<input type="text" id="word" value=""></input>
-<input type="button" value="Hand write that !" onclick="updateString()"></input>
-<p>Please note that this is the very first version of HandWriter. Many upgrades will come soon. Thanks for trying it.</p>
-<br/>
-<p>Github of project : </p> <a href="https://github.com/AnselmeClergeot/handwriter">click here</a>
+<textarea id="word" rows="7" cols="30"></textarea>
+<input type="button" value="Write that" onclick="updateString()"></input>
+<p>Thanks for trying handwriter. <a href="https://github.com/AnselmeClergeot/handwriter">GitHub</a> of the project</p>
 </div>
 </body>
 </html>
